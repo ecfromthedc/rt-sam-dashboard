@@ -602,8 +602,8 @@
   if (isWeekend) {
     badge.textContent = `Today: ${dayName} — no scrape (weekend)`;
     badge.classList.add('weekend');
-    workflow.style.display = 'none';
     weekendBanner.style.display = 'block';
+    // Workflow stays visible on weekends so Eric/Sam can review/edit the flow
   } else if (isMWF) {
     badge.textContent = `Today: ${dayName} — daily + Tides Tracker day`;
     badge.classList.add('mwf');
