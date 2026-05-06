@@ -944,7 +944,18 @@ Format the output as a single Slack-ready summary I can drop in #campaigns.</pre
   function copyPrompt(btn) {
     const block = btn.closest('.prompt-block');
     if (!block) return;
-    const pre = block.querySelector('.prompt-text');
+    // Find the .prompt-text immediately after this button's toolbar
+    // (a block can have multiple prompts; each button copies the one below it)
+    const toolbar = btn.closest('.prompt-toolbar');
+    let pre = null;
+    if (toolbar) {
+      let n = toolbar.nextElementSibling;
+      while (n) {
+        if (n.classList && n.classList.contains('prompt-text')) { pre = n; break; }
+        n = n.nextElementSibling;
+      }
+    }
+    if (!pre) pre = block.querySelector('.prompt-text');
     if (!pre) return;
     const text = pre.innerText;
     const restore = btn.textContent;
