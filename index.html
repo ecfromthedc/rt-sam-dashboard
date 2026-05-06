@@ -245,6 +245,116 @@
     border-radius: 0 6px 6px 0;
   }
   .quirk strong { color: var(--warn-ink); }
+  .prompt-block {
+    background: var(--rt-violet-soft);
+    border: 1px solid var(--rt-violet-border);
+    border-radius: 8px;
+    margin: 10px 0 4px;
+    padding: 0;
+    overflow: hidden;
+  }
+  .prompt-block > summary {
+    cursor: pointer;
+    padding: 9px 14px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--rt-purple);
+    user-select: none;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .prompt-block > summary::-webkit-details-marker { display: none; }
+  .prompt-block > summary::before {
+    content: "💬";
+    font-size: 13px;
+  }
+  .prompt-block > summary::after {
+    content: "▸";
+    margin-left: auto;
+    font-size: 11px;
+    transition: transform 0.15s;
+    color: var(--rt-violet);
+  }
+  .prompt-block[open] > summary::after { transform: rotate(90deg); }
+  .prompt-block > summary:hover { background: rgba(126, 63, 255, 0.06); }
+  .prompt-content {
+    padding: 4px 14px 14px;
+    border-top: 1px solid var(--rt-violet-border);
+  }
+  .prompt-content p {
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin: 8px 0 6px;
+  }
+  .prompt-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 8px 0 4px;
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+  }
+  .copy-btn {
+    background: var(--surface);
+    border: 1px solid var(--rt-violet-border);
+    color: var(--rt-purple);
+    border-radius: 5px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    transition: all 0.12s;
+  }
+  .copy-btn:hover {
+    background: var(--rt-violet);
+    color: white;
+    border-color: var(--rt-violet);
+  }
+  .copy-btn.copied {
+    background: var(--success);
+    color: white;
+    border-color: var(--success);
+  }
+  .prompt-text {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 0;
+    max-height: 360px;
+    overflow-y: auto;
+  }
+  .prompt-text .var {
+    background: rgba(126, 63, 255, 0.12);
+    color: var(--rt-purple);
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+  .prompt-hint {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin: 10px 0 0;
+    padding: 8px 10px;
+    background: var(--line-soft);
+    border-radius: 5px;
+    border-left: 2px solid var(--rt-violet-border);
+  }
+  .prompt-hint strong { color: var(--ink); font-weight: 600; }
   details {
     background: var(--surface);
     border: 1px solid var(--line);
@@ -421,6 +531,35 @@
     <div class="links">
       <a href="https://risingtides-campaign-hub-production.up.railway.app/internal" target="_blank" rel="noopener">Open Internals</a>
     </div>
+    <details class="prompt-block">
+      <summary>Stuck? Scrape returned nothing or too many results</summary>
+      <div class="prompt-content">
+        <p>Use this in a Cursor session pointed at the <code>risingtides-campaign-hub</code> repo. Replace the bracketed variables with values from Campaign Hub.</p>
+        <div class="prompt-toolbar">
+          <span>Prompt — original-sound troubleshoot</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+        </div>
+<pre class="prompt-text">Hey Claude, I need help with the <span class="var">[CAMPAIGN_NAME]</span> campaign.
+
+The scrape is <span class="var">[returning too many results / returning no results / pulling in posts from a different song]</span>.
+
+Sound type: <span class="var">[official audio / original sound]</span>
+If original sound: artist is <span class="var">[ARTIST_NAME]</span> and song title is <span class="var">[SONG_TITLE]</span>.
+Sound ID I'm using: <span class="var">[SOUND_ID]</span>
+Start date: <span class="var">[YYYY-MM-DD]</span>
+Round: <span class="var">[R1 / R2 / R3]</span>
+
+Here's a link to a post that uses the CORRECT sound: <span class="var">[LINK_TO_GOOD_POST]</span>
+
+Can you:
+1. Confirm the sound_id from that post matches what I'm scraping with.
+2. Pull the list of creators booked on this campaign and check whether any of them have posts to that exact sound_id between <span class="var">[START_DATE]</span> and today.
+3. Return only the link list — no commentary — so I can paste straight into Cobrand.</pre>
+        <div class="prompt-hint">
+          <strong>Where to grab variables:</strong> Sound ID — last 19 digits of any TikTok sound URL, or Campaign Hub campaign settings. Good post link — copy from any creator who posted correctly. If unsure, ping Jake.
+        </div>
+      </div>
+    </details>
   </div>
 </div>
 
@@ -454,6 +593,30 @@
       <li>For each one, identify which active campaign it belongs to (by song / artist / promo context)</li>
       <li>Skip duplicates manually — there's no in-app delete button yet (build target)</li>
     </ul>
+    <details class="prompt-block">
+      <summary>Stuck? Can't tell which campaign a link belongs to</summary>
+      <div class="prompt-content">
+        <p>Common when an artist (Bella K, Shaboozey) has multiple active campaigns at once. Paste this with the active campaign list.</p>
+        <div class="prompt-toolbar">
+          <span>Prompt — campaign classification</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+        </div>
+<pre class="prompt-text">Hey Claude, I have a TikTok link from this morning's scrape and I'm not sure which active campaign to attribute it to.
+
+Link: <span class="var">[LINK]</span>
+
+Active campaigns I'm working today: <span class="var">[PASTE_ACTIVE_CAMPAIGN_LIST_FROM_HUB]</span>
+
+Can you:
+1. Open the link, identify the sound_id and the song title.
+2. Cross-reference against the active campaign list.
+3. Tell me which campaign this belongs to, OR flag if it doesn't match any — in which case I'll skip it (probably a label-direct booking or an old campaign).
+4. If it matches, also tell me which Round (R1/R2/R3) based on the campaign's most recent round.</pre>
+        <div class="prompt-hint">
+          <strong>Quirk:</strong> If a creator was booked directly by Warner (or any label) and posted to our sound, it's not ours — Jake's rule is "if the creator isn't in our roster, X it out and move on."
+        </div>
+      </div>
+    </details>
   </div>
 </div>
 
@@ -473,6 +636,43 @@
     <div class="links">
       <a href="https://cobrand.com/" target="_blank" rel="noopener">Open Cobrand</a>
     </div>
+    <details class="prompt-block">
+      <summary>Stuck? Cobrand silently dropped some links (count delta is wrong)</summary>
+      <div class="prompt-content">
+        <p>Run after you upload N links and the count refresh shows fewer than expected. First, ask Claude to filter to genuinely valid links. Then send the rejected list to Lori.</p>
+        <div class="prompt-toolbar">
+          <span>Prompt 1 — validate the rejects</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+        </div>
+<pre class="prompt-text">Hey Claude, Cobrand silently dropped some of my upload.
+
+Campaign: <span class="var">[CAMPAIGN_NAME]</span>
+Cobrand promotion link: <span class="var">[COBRAND_URL]</span>
+I uploaded: <span class="var">[N]</span> links
+Count went from <span class="var">[BEFORE_COUNT]</span> to <span class="var">[AFTER_COUNT]</span>, so <span class="var">[N - DIFF]</span> links got rejected.
+
+Here are the links I tried to upload (full list):
+
+<span class="var">[PASTE_FULL_LINK_LIST]</span>
+
+Can you:
+1. Check each link is a valid TikTok URL format.
+2. Flag any that are private, deleted, or have copyright restrictions.
+3. Return the list of links that should have gone through but didn't — those are the ones I'll send to Lori.</pre>
+        <div class="prompt-toolbar" style="margin-top: 16px;">
+          <span>Slack message — paste to Lori</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+        </div>
+<pre class="prompt-text">hey lori — Cobrand is silently rejecting valid TikTok links on the <span class="var">[CAMPAIGN_NAME]</span> promotion link. Uploaded <span class="var">[N]</span>, only <span class="var">[N-DIFF]</span> went through.
+
+Promotion link: <span class="var">[COBRAND_URL]</span>
+
+Rejected links (all valid, manually verified):
+<span class="var">[PASTE_REJECTED_LIST]</span>
+
+Can you push these in on your end?</pre>
+      </div>
+    </details>
   </div>
 </div>
 
@@ -493,6 +693,56 @@
     <div class="links">
       <a href="https://cobrand.com/" target="_blank" rel="noopener">Cobrand</a>
     </div>
+    <details class="prompt-block">
+      <summary>Verify the canonical toggle config (or create a missing promotion link)</summary>
+      <div class="prompt-content">
+        <p>Use this to have Claude double-check your Cobrand share link toggles before pushing into the Tides Tracker.</p>
+        <div class="prompt-toolbar">
+          <span>Prompt — verify toggles</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+        </div>
+<pre class="prompt-text">Hey Claude, I just generated a Cobrand share link for the <span class="var">[CAMPAIGN_NAME]</span> campaign. Before I push it into the Tides Tracker, can you verify I have the canonical toggle config?
+
+Share link: <span class="var">[COBRAND_SHARE_URL]</span>
+
+Expected config (from rt-sam-dashboard reference table):
+- Live post analytics: ON
+- Live post analytics graph: ON
+- Country filter for live post analytics graph: OFF
+- Sound analytics: ON
+- Campaign analytics: ON
+- Campaign analytics graph: ON
+- Country analytics: OFF
+- Country analytics graph: OFF
+- Chart events on analytics graphs: ON
+- Budgets (whole section): OFF
+- Creators - Contact info: ON
+- Creators - Country: OFF
+- Creators - Pricing: OFF
+- Creators - Campaign notes: ON
+- Creators - Allow viewers to leave campaign notes: ON
+- Live Posts - Country filter: OFF
+- Drafts - Allow viewers to approve / reject: OFF
+- Comment Summaries - AI summaries: OFF
+- Comment Summaries - Sentiment scores: ON
+- Comment Summaries - Relevancy scores: ON
+
+Can you open the share link and tell me which toggles are wrong, if any?</pre>
+        <div class="prompt-toolbar" style="margin-top: 16px;">
+          <span>Prompt — campaign has no promotion link yet</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+        </div>
+<pre class="prompt-text">Hey Claude, the <span class="var">[CAMPAIGN_NAME]</span> campaign doesn't have a Cobrand promotion link yet. Walk me through creating one:
+
+1. Tell me the steps to create a promotion link in Cobrand for this campaign.
+2. Confirm the campaign details I should enter:
+   - Name: <span class="var">[CAMPAIGN_NAME]</span>
+   - Sound ID: <span class="var">[SOUND_ID]</span>
+   - Round: <span class="var">[R1]</span>
+   - Start date: <span class="var">[START_DATE]</span>
+3. After I create it, give me the toggle checklist to apply.</pre>
+      </div>
+    </details>
   </div>
 </div>
 
@@ -530,6 +780,34 @@
       <a href="https://docs.google.com/spreadsheets/d/1-xFkTwhfORRpOFR-Lrvh7yngiMd4LXyCCwiCMZkQPLc/edit" target="_blank" rel="noopener" class="label-amg">AMG Sheet</a>
       <a href="https://docs.google.com/spreadsheets/d/1pBzNx8xFyUwz3jV2_lQ0JbKPHPyP6HHGaE7rqu96okI/edit" target="_blank" rel="noopener" class="label-empire">Empire Sheet</a>
     </div>
+    <details class="prompt-block">
+      <summary>End-of-day pass: health check across all active campaigns</summary>
+      <div class="prompt-content">
+        <p>Run this once you finish the M/W/F update pass. Flags slow campaigns, no-post creators, and what to close out — Slack-ready output for #campaigns.</p>
+        <div class="prompt-toolbar">
+          <span>Prompt — campaign health check</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+        </div>
+<pre class="prompt-text">Hey Claude, I just finished the M/W/F update pass. Run a health check across all active campaigns.
+
+Active campaigns and their current state: <span class="var">[PASTE_ACTIVE_CAMPAIGNS_WITH_STATS]</span>
+
+For each campaign, flag it as one of:
+- ✅ HEALTHY — pacing is on or ahead, no action needed
+- ⚠ NEEDS LOVE — under-pacing (e.g. spent $2.5K, only 500K views, goal is 1M+)
+- ❌ STUCK — no new posts in 3+ days, suggests a creator hasn't delivered
+- 🏁 CLOSING — within 3 days of the typical 2–3 week wrap window, time to start closing it out
+
+For each ⚠ and ❌:
+- Suggest the next action (DM creator, ping label, push more spend, etc.)
+- If a creator hasn't posted, name the creator(s) so I can DM them.
+
+Format the output as a single Slack-ready summary I can drop in #campaigns.</pre>
+        <div class="prompt-hint">
+          <strong>Tip:</strong> Stats source — Campaign Hub, copy active campaign rows including spend, views, and post count. The more numbers Claude has, the sharper the flags.
+        </div>
+      </div>
+    </details>
   </div>
 </div>
 
@@ -584,7 +862,7 @@
 
 <div class="footer">
   Full SOP: <code>~/Documents/Obsidian Vault/Rising Tides OS/SOPs/Scraper-Workflow.md</code><br>
-  Source: <code>github.com/ecfromthedc/rt-sam-dashboard</code> · Last updated: 2026-05-01
+  Source: <code>github.com/ecfromthedc/rt-sam-dashboard</code> · Last updated: 2026-05-06 (inline prompt bible)
 </div>
 
 <script>
@@ -661,6 +939,44 @@
         localStorage.removeItem(key);
       }
     }
+  });
+
+  function copyPrompt(btn) {
+    const block = btn.closest('.prompt-block');
+    if (!block) return;
+    const pre = block.querySelector('.prompt-text');
+    if (!pre) return;
+    const text = pre.innerText;
+    const restore = btn.textContent;
+    const finish = (ok) => {
+      btn.textContent = ok ? '✓ Copied' : 'Copy failed';
+      btn.classList.toggle('copied', ok);
+      setTimeout(() => {
+        btn.textContent = restore;
+        btn.classList.remove('copied');
+      }, 1600);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => finish(true)).catch(() => finish(false));
+    } else {
+      // Fallback for older browsers
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); finish(true); } catch (e) { finish(false); }
+      document.body.removeChild(ta);
+    }
+  }
+
+  // Stop summary clicks inside prompt-block from bubbling up to the step toggle
+  document.querySelectorAll('.prompt-block summary').forEach(s => {
+    s.addEventListener('click', (e) => e.stopPropagation());
+  });
+  document.querySelectorAll('.prompt-block').forEach(b => {
+    b.addEventListener('click', (e) => e.stopPropagation());
   });
 
   applyState();
