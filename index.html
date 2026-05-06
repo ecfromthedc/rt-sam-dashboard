@@ -639,7 +639,7 @@ Can you:
     <details class="prompt-block">
       <summary>Stuck? Cobrand silently dropped some links (count delta is wrong)</summary>
       <div class="prompt-content">
-        <p>Run after you upload N links and the count refresh shows fewer than expected. First, ask Claude to filter to genuinely valid links. Then send the rejected list to Lori.</p>
+        <p>Run after you upload N links and the count refresh shows fewer than expected. First, ask Claude to filter to genuinely valid links. Then send the rejected list to Laurier.</p>
         <div class="prompt-toolbar">
           <span>Prompt 1 — validate the rejects</span>
           <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
@@ -658,12 +658,12 @@ Here are the links I tried to upload (full list):
 Can you:
 1. Check each link is a valid TikTok URL format.
 2. Flag any that are private, deleted, or have copyright restrictions.
-3. Return the list of links that should have gone through but didn't — those are the ones I'll send to Lori.</pre>
+3. Return the list of links that should have gone through but didn't — those are the ones I'll send to Laurier.</pre>
         <div class="prompt-toolbar" style="margin-top: 16px;">
-          <span>Slack message — paste to Lori</span>
+          <span>Slack message — paste to Laurier</span>
           <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
         </div>
-<pre class="prompt-text">hey lori — Cobrand is silently rejecting valid TikTok links on the <span class="var">[CAMPAIGN_NAME]</span> promotion link. Uploaded <span class="var">[N]</span>, only <span class="var">[N-DIFF]</span> went through.
+<pre class="prompt-text">hey Laurier — Cobrand is silently rejecting valid TikTok links on the <span class="var">[CAMPAIGN_NAME]</span> promotion link. Uploaded <span class="var">[N]</span>, only <span class="var">[N-DIFF]</span> went through.
 
 Promotion link: <span class="var">[COBRAND_URL]</span>
 
